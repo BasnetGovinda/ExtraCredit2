@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
-		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.8.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
 
 	<context:component-scan base-package="com.extra.credit2"></context:component-scan>
@@ -18,61 +15,45 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 
-<!-- 	<bean class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
-		id="sessionFactory">
-
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 
-		<property name="hibernateProperties" ref="hibernateProperties" />
-
-		<property value="com.extra.credit2.domian" name="packagesToScan" />
-
-	</bean>
-
-	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource"
-		id="dataSource">
-
-		<property value="com.mysql.jdbc.Driver" name="driverClassName" />
-
-		<property
-			value="jdbc:mysql://localhost/ExtraCredit2?createDatabaseIfNotExist=true"
-			name="url" />
-
-		<property value="root" name="username" />
-
-		<property value="" name="password" />
-
-	</bean>
-	<bean class="org.springframework.beans.factory.config.PropertiesFactoryBean"
-		id="hibernateProperties">
-
-		<property name="properties">
-
-			<props>
-
-				<prop key="hibernate.hbm2ddl.auto">create</prop>
-
-				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect </prop>
-
-				<prop key="connection.pool_size">1</prop>
-
-				<prop key="hibernate.show_sql">true</prop>
-
-			</props>
-
+		<property name="packagesToScan" value="com.extra.credit2.domian" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
 		</property>
-
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<!-- <prop key="hibernate.hbm2ddl.import_files">populate.sql</prop> -->
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
 	</bean>
 
-	<tx:annotation-driven transaction-manager="txManager" />
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/extracredit2?createDatabaseIfNotExist=true" />
+		<property name="username" value="root" />
+		<property name="password" value="" />
+	</bean>
 
 
-	<bean class="org.springframework.orm.hibernate4.HibernateTransactionManager"
-		id="txManager">
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
 
-		<property name="sessionFactory" ref="sessionFactory" />
+	<context:component-scan base-package="com.ems">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
 
 
-	</bean> -->
+
+
 
 </beans>
